@@ -1,0 +1,18 @@
+import requests
+import json
+
+# Replace with your API key
+api_key = "your_api_key"
+
+# Replace with the location you want to monitor
+city = "New York"
+country_code = "US"
+
+# Construct the API endpoint URL
+url = f"http://api.openweathermap.org/data/2.5/weather?q={city},{country_code}&appid={api_key}&units=metric"
+
+# Make the API request
+response = requests.get(url)
+
+# Parse the JSON data
+data = json.loads(response.text)
