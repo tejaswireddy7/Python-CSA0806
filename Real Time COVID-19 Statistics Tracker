@@ -1,0 +1,25 @@
+import requests
+import pandas as pd
+import matplotlib.pyplot as plt
+def fetch_covid_data(region):
+    if region == 'India':
+        url = 'https://www.mygov.in/covid-19/'
+    else:
+        url = 'https://www.worldometers.info/coronavirus/'
+    response = requests.get(url)
+def visualize_covid_data(data):
+    plt.figure(figsize=(12, 6))
+    plt.plot(data['date'], data['cases'], label='Cases')
+    plt.plot(data['date'], data['recoveries'], label='Recoveries')
+    plt.plot(data['date'], data['deaths'], label='Deaths')
+    plt.xlabel('Date')
+    plt.ylabel('Number')
+    plt.title('COVID-19 Statistics')
+    plt.legend()
+    plt.show()
+def main():
+    region = input("Enter the region (e.g., 'India', 'Global'): ")
+    covid_data = fetch_covid_data(region)
+    visualize_covid_data(covid_data)
+if __name__ == "__main__":
+    main()
