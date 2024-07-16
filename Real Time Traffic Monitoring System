@@ -1,0 +1,44 @@
+import requests
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+def fetch_traffic_data():
+    url = "https://api.example.com/traffic"
+    response = requests.get(url)
+    return response.json()
+def analyze_traffic_patterns(data):
+    df = pd.DataFrame(data)
+    congestion_levels = df.groupby('road_segment')['speed'].mean()
+    return congestion_levels
+def predict_traffic(historical_data):
+    X = historical_data.index.to_numpy().reshape(-1, 1)
+    y = historical_data['speed'].to_numpy()
+    model = LinearRegression()
+    model.fit(X, y)
+    return model
+def find_optimal_route(graph, source, destination):
+    path = nx.dijkstra_path(graph, source, destination, weight='travel_time')
+    return path
+def visualize_traffic(congestion_levels, graph):
+    plt.figure(figsize=(10, 10))
+    pos = nx.spring_layout(graph)
+    nx.draw(graph, pos, with_labels=True)
+    nx.draw_networkx_edges(graph, pos)
+    edge_labels = nx.get_edge_attributes(graph, 'travel_time')
+    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels)
+    plt.show()
+def main():
+    traffic_data = fetch_traffic_data()
+    congestion_levels = analyze_traffic_patterns(traffic_data)
+    historical_data = pd.read_csv('historical_traffic.csv')
+    traffic_model = predict_traffic(historical_data)
+    graph = nx.Graph()
+    graph.add_weighted_edges_from([('A', 'B', 5), ('B', 'C', 3), ('C', 'D', 8), ('D', 'A', 2)])
+    source = 'A'
+    destination = 'C'
+    optimal_route = find_optimal_route(graph, source, destination)
+    visualize_traffic(congestion_levels, graph)
+
+if __name__ == "__main__":
+    main()
